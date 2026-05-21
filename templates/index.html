@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Stress Level Predictor</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 30px 16px;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+    header h1 { font-size: 2rem; margin-bottom: 8px; }
+    header p  { opacity: .85; font-size: 1rem; }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 36px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    }
+
+    .section-title {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #7c3aed;
+      margin: 24px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #ede9fe;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 540px) { .grid { grid-template-columns: 1fr; } }
+
+    .field label {
+      display: block;
+      font-size: .82rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+    .field input[type=range] {
+      width: 100%;
+      accent-color: #7c3aed;
+      cursor: pointer;
+    }
+    .field .val-display {
+      text-align: right;
+      font-size: .82rem;
+      font-weight: 700;
+      color: #7c3aed;
+      margin-top: 2px;
+    }
+    .field .hint {
+      font-size: .73rem;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: 10px;
+    }
+    .toggle-group input[type=radio] { display: none; }
+    .toggle-group label {
+      flex: 1;
+      text-align: center;
+      padding: 8px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: .84rem;
+      font-weight: 600;
+      color: #6b7280;
+      transition: all .2s;
+    }
+    .toggle-group input[type=radio]:checked + label {
+      border-color: #7c3aed;
+      background: #ede9fe;
+      color: #7c3aed;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 28px;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      letter-spacing: .5px;
+      transition: opacity .2s, transform .1s;
+    }
+    .btn:hover  { opacity: .9; }
+    .btn:active { transform: scale(.98); }
+
+    .error {
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: .9rem;
+    }
+
+    .nav-links {
+      text-align: center;
+      margin-top: 18px;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: .9rem;
+      margin: 0 12px;
+      opacity: .85;
+    }
+    .nav-links a:hover { opacity: 1; text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🧠 Student Stress Predictor</h1>
+    <p>Fill in your daily habits — we'll predict your current stress level using AI</p>
+  </header>
+
+  <div class="card">
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form action="/predict" method="POST">
+
+      <!-- SLEEP & LIFESTYLE -->
+      <div class="section-title">😴 Sleep & Lifestyle</div>
+      <div class="grid">
+
+        <div class="field">
+          <label>Sleep Hours per Night</label>
+          <input type="range" name="SleepHours" min="3" max="12" step="0.5" value="7"
+                 oninput="this.nextElementSibling.textContent=this.value+' hrs'">
+          <div class="val-display">7 hrs</div>
+          <div class="hint">Recommended: 7–9 hrs</div>
+        </div>
+
+        <div class="field">
+          <label>Physical Activity (hrs/day)</label>
+          <input type="range" name="PhysicalActivity" min="0" max="5" step="0.5" value="1"
+                 oninput="this.nextElementSibling.textContent=this.value+' hrs'">
+          <div class="val-display">1 hrs</div>
+          <div class="hint">Exercise, sports, walks</div>
+        </div>
+
+        <div class="field">
+          <label>Screen Time (hrs/day)</label>
+          <input type="range" name="ScreenTime" min="0" max="16" step="1" value="5"
+                 oninput="this.nextElementSibling.textContent=this.value+' hrs'">
+          <div class="val-display">5 hrs</div>
+          <div class="hint">Phone, TV, computer</div>
+        </div>
+
+        <div class="field">
+          <label>Social Interaction (hrs/day)</label>
+          <input type="range" name="SocialInteraction" min="0" max="10" step="1" value="2"
+                 oninput="this.nextElementSibling.textContent=this.value+' hrs'">
+          <div class="val-display">2 hrs</div>
+          <div class="hint">Friends, family, peers</div>
+        </div>
+      </div>
+
+      <!-- ACADEMIC & FINANCIAL -->
+      <div class="section-title">📚 Academic & Financial</div>
+      <div class="grid">
+
+        <div class="field">
+          <label>Study / Work Hours per Day</label>
+          <input type="range" name="StudyWorkHours" min="0" max="16" step="1" value="6"
+                 oninput="this.nextElementSibling.textContent=this.value+' hrs'">
+          <div class="val-display">6 hrs</div>
+        </div>
+
+        <div class="field">
+          <label>Academic Work Pressure (1–10)</label>
+          <input type="range" name="AcademicWorkPressure" min="1" max="10" step="1" value="5"
+                 oninput="this.nextElementSibling.textContent=this.value">
+          <div class="val-display">5</div>
+          <div class="hint">1 = very low, 10 = extreme</div>
+        </div>
+
+        <div class="field">
+          <label>Financial Pressure (1–10)</label>
+          <input type="range" name="FinancialPressure" min="1" max="10" step="1" value="3"
+                 oninput="this.nextElementSibling.textContent=this.value">
+          <div class="val-display">3</div>
+        </div>
+      </div>
+
+      <!-- MENTAL & EMOTIONAL -->
+      <div class="section-title">💭 Mental & Emotional</div>
+      <div class="grid">
+
+        <div class="field">
+          <label>Anxiety Level (1–10)</label>
+          <input type="range" name="AnxietyLevel" min="1" max="10" step="1" value="4"
+                 oninput="this.nextElementSibling.textContent=this.value">
+          <div class="val-display">4</div>
+        </div>
+
+        <div class="field">
+          <label>Mood Score (1–10)</label>
+          <input type="range" name="MoodScore" min="1" max="10" step="1" value="6"
+                 oninput="this.nextElementSibling.textContent=this.value">
+          <div class="val-display">6</div>
+          <div class="hint">1 = very bad, 10 = excellent</div>
+        </div>
+      </div>
+
+      <!-- RELATIONSHIP -->
+      <div class="section-title">💞 Relationships</div>
+      <div class="field">
+        <label>Relationship Issues?</label>
+        <div class="toggle-group">
+          <input type="radio" id="rel_no"  name="RelationshipIssues" value="0" checked>
+          <label for="rel_no">✅ No issues</label>
+          <input type="radio" id="rel_yes" name="RelationshipIssues" value="1">
+          <label for="rel_yes">⚠️ Yes, having issues</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn">🔍 Predict My Stress Level</button>
+    </form>
+  </div>
+
+  <div class="nav-links">
+    <a href="/dashboard">📊 View Model Dashboard</a>
+  </div>
+</div>
+</body>
+</html>

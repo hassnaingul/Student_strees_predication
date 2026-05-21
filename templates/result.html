@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stress Prediction Result</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 30px 16px;
+    }
+
+    .container { max-width: 680px; margin: 0 auto; }
+
+    header { text-align: center; color: white; margin-bottom: 24px; }
+    header h1 { font-size: 1.8rem; }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 36px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+      margin-bottom: 20px;
+    }
+
+    .result-badge {
+      text-align: center;
+      padding: 28px 20px;
+      border-radius: 14px;
+      margin-bottom: 28px;
+    }
+    .result-badge .emoji  { font-size: 3.5rem; display: block; margin-bottom: 10px; }
+    .result-badge h2      { font-size: 2rem; font-weight: 800; color: white; }
+    .result-badge p       { color: rgba(255,255,255,.9); margin-top: 8px; font-size: 1rem; }
+
+    .section-title {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #7c3aed;
+      margin: 0 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #ede9fe;
+    }
+
+    /* Probability bars */
+    .prob-row { margin-bottom: 12px; }
+    .prob-row .label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .85rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+    .bar-bg {
+      background: #f3f4f6;
+      border-radius: 99px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .8s ease;
+    }
+
+    /* Tips */
+    .tips { list-style: none; }
+    .tips li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      background: #f9fafb;
+      font-size: .9rem;
+      color: #374151;
+    }
+    .tips li::before { content: "✔"; color: #7c3aed; font-weight: 700; flex-shrink: 0; }
+
+    /* Summary table */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .summary-item {
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: .82rem;
+    }
+    .summary-item .s-label { color: #9ca3af; margin-bottom: 2px; }
+    .summary-item .s-val   { font-weight: 700; color: #1f2937; }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header><h1>🧠 Your Stress Analysis</h1></header>
+
+  <div class="card">
+    <!-- Result Badge -->
+    <div class="result-badge" style="background: {{ result.info.color }}">
+      <span class="emoji">{{ result.info.emoji }}</span>
+      <h2>{{ result.prediction }} Stress</h2>
+      <p>{{ result.info.message }}</p>
+    </div>
+
+    <!-- Probability Bars -->
+    <div class="section-title">Prediction Confidence</div>
+    {% set bar_colors = {"High": "#ef4444", "Low": "#22c55e", "Medium": "#f59e0b"} %}
+    {% for cls, prob in result.probabilities.items() %}
+    <div class="prob-row">
+      <div class="label"><span>{{ cls }} Stress</span><span>{{ prob }}%</span></div>
+      <div class="bar-bg">
+        <div class="bar-fill" style="width:{{ prob }}%; background:{{ bar_colors[cls] }}"></div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Tips -->
+    <div class="section-title" style="margin-top:24px">Recommendations</div>
+    <ul class="tips">
+      {% for tip in result.info.tips %}
+      <li>{{ tip }}</li>
+      {% endfor %}
+    </ul>
+
+    <!-- Input Summary -->
+    <div class="section-title" style="margin-top:24px">Your Input Summary</div>
+    <div class="summary-grid">
+      <div class="summary-item"><div class="s-label">Sleep Hours</div><div class="s-val">{{ inputs.SleepHours }} hrs</div></div>
+      <div class="summary-item"><div class="s-label">Study/Work Hours</div><div class="s-val">{{ inputs.StudyWorkHours }} hrs</div></div>
+      <div class="summary-item"><div class="s-label">Screen Time</div><div class="s-val">{{ inputs.ScreenTime }} hrs</div></div>
+      <div class="summary-item"><div class="s-label">Physical Activity</div><div class="s-val">{{ inputs.PhysicalActivity }} hrs</div></div>
+      <div class="summary-item"><div class="s-label">Anxiety Level</div><div class="s-val">{{ inputs.AnxietyLevel }} / 10</div></div>
+      <div class="summary-item"><div class="s-label">Mood Score</div><div class="s-val">{{ inputs.MoodScore }} / 10</div></div>
+    </div>
+
+    <a href="/" class="btn">🔄 Predict Again</a>
+  </div>
+</div>
+</body>
+</html>

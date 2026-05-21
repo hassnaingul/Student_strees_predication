@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Model Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 30px 16px;
+    }
+    .container { max-width: 820px; margin: 0 auto; }
+    header { text-align: center; color: white; margin-bottom: 24px; }
+    header h1 { font-size: 1.8rem; }
+    header p  { opacity: .85; margin-top: 6px; }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #7c3aed;
+      margin-bottom: 16px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #ede9fe;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .stat-box {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-box .val  { font-size: 2rem; font-weight: 800; }
+    .stat-box .lbl  { font-size: .78rem; opacity: .85; margin-top: 4px; }
+
+    .plot-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 580px) { .plot-row { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: 1fr 1fr; } }
+
+    .plot-box { text-align: center; }
+    .plot-box h3 { font-size: .9rem; font-weight: 600; color: #374151; margin-bottom: 10px; }
+    .plot-box img { width: 100%; border-radius: 10px; border: 1px solid #e5e7eb; }
+
+    .info-list { list-style: none; }
+    .info-list li {
+      padding: 9px 14px;
+      background: #f9fafb;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: .88rem;
+      color: #374151;
+      display: flex;
+      gap: 10px;
+    }
+    .info-list li strong { color: #7c3aed; min-width: 160px; }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: .95rem;
+      font-weight: 700;
+      border-radius: 10px;
+      text-decoration: none;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>📊 Model Dashboard</h1>
+    <p>MLP Neural Network — Student Stress Level Classifier</p>
+  </header>
+
+  <div class="card">
+    <div class="section-title">Model Performance</div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="val">85%</div><div class="lbl">Test Accuracy</div></div>
+      <div class="stat-box"><div class="val">197</div><div class="lbl">Training Samples</div></div>
+      <div class="stat-box"><div class="val">10</div><div class="lbl">Input Features</div></div>
+    </div>
+
+    <div class="section-title">Visualizations</div>
+    <div class="plot-row">
+      <div class="plot-box">
+        <h3>Confusion Matrix</h3>
+        <img src="/static/confusion_matrix.png" alt="Confusion Matrix"/>
+      </div>
+      <div class="plot-box">
+        <h3>Training Loss Curve</h3>
+        <img src="/static/loss_curve.png" alt="Loss Curve"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Model Details</div>
+    <ul class="info-list">
+      <li><strong>Algorithm</strong> MLPClassifier (Neural Network)</li>
+      <li><strong>Architecture</strong> 10 → 128 → 64 → 3</li>
+      <li><strong>Activation</strong> ReLU</li>
+      <li><strong>Optimizer</strong> Adam (L-BFGS)</li>
+      <li><strong>Classes</strong> Low / Medium / High Stress</li>
+      <li><strong>Scaler</strong> StandardScaler</li>
+      <li><strong>Train / Test Split</strong> 80% / 20% (stratified)</li>
+      <li><strong>Early Stopping</strong> Yes (20 iterations patience)</li>
+    </ul>
+  </div>
+
+  <div style="text-align:center">
+    <a href="/" class="btn">🔍 Make a Prediction</a>
+  </div>
+</div>
+</body>
+</html>
